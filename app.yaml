@@ -1,0 +1,16 @@
+mysql:
+  account: root
+  password: ""
+  host: 127.0.0.1
+  port: 3306
+  dbname: ginchat
+  config: charset=utf8mb4&parseTime=True&loc=Local
+
+# local configuration
+local:
+  path: files
+  store-path: storage/app
+
+
+system:
+  port: :8080

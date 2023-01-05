@@ -1,0 +1,84 @@
+definitions:
+  response.Response:
+    properties:
+      data: {}
+      msg:
+        type: string
+    type: object
+  systemReq.Register:
+    properties:
+      confirmed password:
+        example: password
+        type: string
+      email:
+        example: ldl@qq.com
+        type: string
+      name:
+        example: name
+        type: string
+      password:
+        example: password
+        type: string
+    required:
+    - confirmed password
+    - email
+    - name
+    - password
+    type: object
+  systemRes.UserResponse:
+    properties:
+      email:
+        example: ldl@qq.com
+        type: string
+      name:
+        example: name
+        type: string
+      password:
+        example: password
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping pong
+      tags:
+      - test
+  /user/register:
+    post:
+      description: 用户注册账号
+      parameters:
+      - description: name, password, email
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/systemReq.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户注册账号,返回包括用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/systemRes.UserResponse'
+                msg:
+                  type: string
+              type: object
+      tags:
+      - User
+swagger: "2.0"
