@@ -37,7 +37,6 @@ go get -u github.com/swaggo/swag/cmd/swag
 #### 2.3.2 生成API文档
 
 ```` shell
-cd server
 swag init
 ````
 
