@@ -1,7 +1,7 @@
 package request
 
 import (
-	"reflect"
+	systemRes "ginchat/model/response"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -19,8 +19,7 @@ func GetErrMsg(u interface{}, err error) string {
 		fieldName := validationErr.Field() // 获取是哪个字段不符合格式
 		tag := validationErr.Tag()         // 获取是哪个tag不符合格式
 
-		field, _ := reflect.TypeOf(u).FieldByName(fieldName) // 通过反射获取filed
-		errMsg := field.Tag.Get(tag + "_err_msg")            // 定义自定义报错信息 例子：required_err_msg
+		errMsg := systemRes.GetUserErrMsg(tag) // tag 转报错信息
 
 		if errMsg != "" {
 			return errMsg

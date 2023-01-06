@@ -25,6 +25,5 @@ func Api(router *gin.Engine) {
 		routerGroup.InitResourceRouter(publicGroup, prviateGroup) // 资源路由
 
 		routerGroup.InitUserRouter(publicGroup, prviateGroup)
-
 	}
 }

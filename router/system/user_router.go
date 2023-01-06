@@ -15,6 +15,7 @@ func (_ *UserRouter) InitUserRouter(p *gin.RouterGroup, l *gin.RouterGroup) {
 
 	{ // Public
 		pUser.POST("/register", userController.Register)
+		pUser.POST("/login", userController.Login)
 	}
 
 	{ // Prviate

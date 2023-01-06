@@ -29,7 +29,7 @@ func (_ *UserController) Register(c *gin.Context) {
 	var params systemReq.Register
 	var user model.UserBasic
 
-	params.InitValidations()
+	systemReq.RegisterUserValidations(systemReq.RegisterMethod)
 
 	// 验证参数
 	err := c.ShouldBindJSON(&params)
@@ -56,6 +56,36 @@ func (_ *UserController) Register(c *gin.Context) {
 	err = global.MY_DB.Create(&user).Error
 	if err != nil {
 		response.Failed(c, http.StatusUnprocessableEntity, "注册失败")
+		return
+	}
+
+	response.OK(c, systemRes.UserResponse{User: user})
+}
+
+// Login
+// @Tags     User
+// @Schemes
+// @Description 用户登陆账号
+// @Produce   application/json
+// @Param    data      body      systemReq.Login          true  "email, password"
+// @Success  200   {object}  response.Response{data=systemRes.UserResponse,msg=string}  "用户登陆账号,返回包括用户信息"
+// @Router /user/login [post]
+func (_ *UserController) Login(c *gin.Context) {
+	var params systemReq.Login
+	var user model.UserBasic
+
+	systemReq.RegisterUserValidations(systemReq.LoginMethod)
+
+	// 验证参数
+	err := c.ShouldBindJSON(&params)
+	if err != nil {
+		response.Failed(c, http.StatusUnprocessableEntity, request.GetErrMsg(params, err))
+		return
+	}
+
+	global.MY_DB.Where("email = ?", params.Email).First(&user)
+	if !utils.BcryptCheck(params.Password, user.Password) {
+		response.Failed(c, http.StatusUnprocessableEntity, "Wrong email or password")
 		return
 	}
 
