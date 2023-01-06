@@ -39,6 +39,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/login": {
+            "post": {
+                "description": "用户登陆账号",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "description": "email, password",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/systemReq.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "用户登陆账号,返回包括用户信息",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/systemRes.UserResponse"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "用户注册账号",
@@ -50,7 +95,7 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "name, password, email",
+                        "description": "name, password, confirmed password, email",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -86,12 +131,84 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.UserBasic": {
+            "type": "object",
+            "properties": {
+                "clientIP": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "heartbeatTime": {
+                    "description": "心跳检测时间",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isLogout": {
+                    "type": "boolean"
+                },
+                "loginTime": {
+                    "description": "ClientPort    string ` + "`" + `json:\"clientPort\" gorm:\"required\"` + "`" + `",
+                    "type": "string"
+                },
+                "logoutTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
         "response.Response": {
             "type": "object",
             "properties": {
                 "data": {},
                 "msg": {
                     "type": "string"
+                }
+            }
+        },
+        "systemReq.Login": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "ldl@qq.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
                 }
             }
         },
@@ -125,17 +242,8 @@ const docTemplate = `{
         "systemRes.UserResponse": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "ldl@qq.com"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "name"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "password"
+                "user": {
+                    "$ref": "#/definitions/model.UserBasic"
                 }
             }
         }

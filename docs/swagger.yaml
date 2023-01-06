@@ -1,9 +1,58 @@
 definitions:
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  model.UserBasic:
+    properties:
+      clientIP:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      heartbeatTime:
+        description: 心跳检测时间
+        type: string
+      id:
+        type: integer
+      isLogout:
+        type: boolean
+      loginTime:
+        description: ClientPort    string `json:"clientPort" gorm:"required"`
+        type: string
+      logoutTime:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+      uuid:
+        type: string
+    type: object
   response.Response:
     properties:
       data: {}
       msg:
         type: string
+    type: object
+  systemReq.Login:
+    properties:
+      email:
+        example: ldl@qq.com
+        type: string
+      password:
+        example: password
+        type: string
+    required:
+    - email
+    - password
     type: object
   systemReq.Register:
     properties:
@@ -27,15 +76,8 @@ definitions:
     type: object
   systemRes.UserResponse:
     properties:
-      email:
-        example: ldl@qq.com
-        type: string
-      name:
-        example: name
-        type: string
-      password:
-        example: password
-        type: string
+      user:
+        $ref: '#/definitions/model.UserBasic'
     type: object
 info:
   contact: {}
@@ -55,11 +97,37 @@ paths:
       summary: ping pong
       tags:
       - test
+  /user/login:
+    post:
+      description: 用户登陆账号
+      parameters:
+      - description: email, password
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/systemReq.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户登陆账号,返回包括用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/systemRes.UserResponse'
+                msg:
+                  type: string
+              type: object
+      tags:
+      - User
   /user/register:
     post:
       description: 用户注册账号
       parameters:
-      - description: name, password, email
+      - description: name, password, confirmed password, email
         in: body
         name: data
         required: true

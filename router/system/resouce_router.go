@@ -9,11 +9,11 @@ import (
 type ResourceRouter struct {
 }
 
-func (_ *ResourceRouter) InitResourceRouter(p *gin.RouterGroup, l *gin.RouterGroup) {
+func (_ *ResourceRouter) InitResourceRouter(r *gin.RouterGroup) {
 	resourceController := new(controller.ResourceController)
 
 	{ // Public
-		resource(p, "/user", resourceController)
+		resource(r, "/resource", resourceController)
 	}
 
 	{ // Prviate

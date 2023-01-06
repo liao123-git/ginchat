@@ -2,6 +2,7 @@ package system
 
 import (
 	"ginchat/controller"
+	"ginchat/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,16 +10,17 @@ import (
 type UserRouter struct {
 }
 
-func (_ *UserRouter) InitUserRouter(p *gin.RouterGroup, l *gin.RouterGroup) {
-	pUser := p.Group("/user")
+func (_ *UserRouter) InitUserRouter(r *gin.RouterGroup) {
+	router := r.Group("/user")
 	userController := new(controller.UserController)
 
-	{ // Public
-		pUser.POST("/register", userController.Register)
-		pUser.POST("/login", userController.Login)
+	{
+		router.POST("/register", userController.Register)
+		router.POST("/login", userController.Login)
 	}
 
+	prviateRouter := router.Use(middleware.JWTAuth())
 	{ // Prviate
-
+		prviateRouter.GET("/testJWT", userController.TestJWT)
 	}
 }

@@ -92,7 +92,7 @@ swag init
 
 ## 4. 主要功能（更新中）
 
-- 用户：注册，登陆。
+- 用户：注册，登陆，`jwt`简单实现。
 - validator：自定义验证字段和错误信息。
   - 自定义验证字段：[model/request/user_request.go](https://github.com/liao123-git/ginchat/tree/main/model/request/user_request.go)
   - 自定义错误信息：[utils/request/request.go](https://github.com/liao123-git/ginchat/tree/main/utils/request/request.go)

@@ -19,7 +19,7 @@ type UserController struct {
 
 // Register
 // @Tags     User
-// @Schemes
+// @Schemes 用户注册账号
 // @Description 用户注册账号
 // @Produce   application/json
 // @Param    data      body      systemReq.Register          true  "name, password, confirmed password, email"
@@ -64,11 +64,11 @@ func (_ *UserController) Register(c *gin.Context) {
 
 // Login
 // @Tags     User
-// @Schemes
+// @Schemes 用户登陆账号
 // @Description 用户登陆账号
 // @Produce   application/json
 // @Param    data      body      systemReq.Login          true  "email, password"
-// @Success  200   {object}  response.Response{data=systemRes.UserResponse,msg=string}  "用户登陆账号,返回包括用户信息"
+// @Success  200   {object}  response.Response{data=systemRes.LoginResponse,msg=string}  "用户登陆账号,返回包括用户信息"
 // @Router /user/login [post]
 func (_ *UserController) Login(c *gin.Context) {
 	var params systemReq.Login
@@ -83,11 +83,49 @@ func (_ *UserController) Login(c *gin.Context) {
 		return
 	}
 
+	// 验证密码
 	global.MY_DB.Where("email = ?", params.Email).First(&user)
 	if !utils.BcryptCheck(params.Password, user.Password) {
 		response.Failed(c, http.StatusUnprocessableEntity, "Wrong email or password")
 		return
 	}
 
-	response.OK(c, systemRes.UserResponse{User: user})
+	// 获取token
+	token, err := creatJWT(&user)
+	if err != nil {
+		response.Failed(c, http.StatusUnprocessableEntity, "Get token failed")
+		return
+	}
+
+	response.OK(c, systemRes.LoginResponse{
+		Name:  user.Name,
+		Email: user.Email,
+		UUID:  user.UUID,
+		Token: token,
+	})
+}
+
+func creatJWT(u *model.UserBasic) (string, error) {
+	baseClaims := utils.BaseClaims{
+		Name:  u.Name,
+		Email: u.Email,
+		UUID:  u.UUID,
+	}
+
+	myCustomClaims := utils.CreateClaims(baseClaims)
+
+	return utils.CreateJWT(myCustomClaims)
+}
+
+// 测试 jwt
+func (_ *UserController) TestJWT(c *gin.Context) {
+	claims, has := c.Get("claims")
+	if !has {
+		response.Failed(c, http.StatusUnprocessableEntity, "Token failed")
+		return
+	}
+
+	response.OK(c, gin.H{
+		"claims": claims,
+	})
 }

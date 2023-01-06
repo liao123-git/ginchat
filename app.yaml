@@ -14,3 +14,7 @@ local:
 
 system:
   port: :8080
+
+jwt:
+  sigin-key: ldlkukukaki
+  issuer: ldlkukukaki
