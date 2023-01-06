@@ -14,11 +14,11 @@ type UserBasic struct {
 	UUID     string `json:"uuid" gorm:"required,unique"`
 	ClientIP string `json:"clientIP" gorm:"required"`
 	// ClientPort    string `json:"clientPort" gorm:"required"`
-	LoginTime     time.Time
-	HeartbeatTime time.Time // 心跳检测时间
-	LogoutTime    time.Time
-	IsLogout      bool `gorm:"default:true"`
-	DeviceInfo    string
+	LoginTime     time.Time `json:"loginTime"`
+	HeartbeatTime time.Time `json:"heartbeatTime"` // 心跳检测时间
+	LogoutTime    time.Time `json:"logoutTime"`
+	IsLogout      bool      `json:"isLogout" gorm:"default:true"`
+	DeviceInfo    string    `json:"-"`
 }
 
 func (table *UserBasic) TableName() string {

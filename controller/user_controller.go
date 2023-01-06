@@ -1,17 +1,17 @@
 package controller
 
 import (
-	"errors"
 	"ginchat/global"
 	"ginchat/model"
 	systemReq "ginchat/model/request"
 	systemRes "ginchat/model/response"
+	"ginchat/utils"
+	"ginchat/utils/request"
 	"ginchat/utils/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type UserController struct {
@@ -22,23 +22,19 @@ type UserController struct {
 // @Schemes
 // @Description 用户注册账号
 // @Produce   application/json
-// @Param    data      body      systemReq.Register          true  "name, password, email"
+// @Param    data      body      systemReq.Register          true  "name, password, confirmed password, email"
 // @Success  200   {object}  response.Response{data=systemRes.UserResponse,msg=string}  "用户注册账号,返回包括用户信息"
 // @Router /user/register [post]
 func (_ *UserController) Register(c *gin.Context) {
 	var params systemReq.Register
 	var user model.UserBasic
 
-	reqIP := c.ClientIP()
+	params.InitValidations()
+
+	// 验证参数
 	err := c.ShouldBindJSON(&params)
-
 	if err != nil {
-		response.Failed(c, http.StatusUnprocessableEntity, err.Error())
-		return
-	}
-
-	if !errors.Is(global.MY_DB.Where("email = ?", params.Email).First(&user).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
-		response.Failed(c, http.StatusUnauthorized, "该用户名已注册")
+		response.Failed(c, http.StatusUnprocessableEntity, request.GetErrMsg(params, err))
 		return
 	}
 
@@ -50,9 +46,9 @@ func (_ *UserController) Register(c *gin.Context) {
 
 	user = model.UserBasic{
 		Name:     params.Name,
-		Password: params.Password,
+		Password: utils.BcryptHash(params.Password),
 		Email:    params.Email,
-		ClientIP: reqIP,
+		ClientIP: c.ClientIP(),
 		UUID:     u1.String(),
 	}
 
