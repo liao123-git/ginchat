@@ -12,10 +12,3 @@ type ResourceMethod interface {
 	Edit(c *gin.Context)    // PUT /user/id
 	Destroy(c *gin.Context) // DELETE /user/id
 }
-
-// 所有路由
-type Controller struct {
-	UserController     UserController
-	TestController     TestController
-	ResourceController ResourceController
-}

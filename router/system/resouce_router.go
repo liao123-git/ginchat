@@ -10,10 +10,10 @@ type ResourceRouter struct {
 }
 
 func (_ *ResourceRouter) InitResourceRouter(p *gin.RouterGroup, l *gin.RouterGroup) {
-	resourceController := new(controller.Controller)
+	resourceController := new(controller.ResourceController)
 
 	{ // Public
-		resource(p, "/user", &resourceController.ResourceController)
+		resource(p, "/user", resourceController)
 	}
 
 	{ // Prviate

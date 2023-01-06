@@ -11,10 +11,10 @@ type UserRouter struct {
 
 func (_ *UserRouter) InitUserRouter(p *gin.RouterGroup, l *gin.RouterGroup) {
 	pUser := p.Group("/user")
-	ctl := new(controller.Controller).UserController
+	userController := new(controller.UserController)
 
 	{ // Public
-		pUser.POST("/register", ctl.Register)
+		pUser.POST("/register", userController.Register)
 	}
 
 	{ // Prviate
