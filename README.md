@@ -94,7 +94,8 @@ swag init
 
 - 用户：注册，登陆，`jwt`简单实现。
 - validator：自定义验证字段和错误信息。
+  - 自定义验证字段：[model/request/user_request.go](https://github.com/liao123-git/ginchat/blob/927652e46705f3b26871fec415815fef0048e40e/model/request/user_request.go#L32)
   - 定义tag对应的信息：[model/response/user_response.go](https://github.com/liao123-git/ginchat/blob/927652e46705f3b26871fec415815fef0048e40e/model/response/user_response.go#L17)
-  - 自定义错误信息：[utils/request/request.go](https://github.com/liao123-git/ginchat/tree/main/utils/request/request.go)
+  - 返回自定义错误信息：[utils/request/request.go](https://github.com/liao123-git/ginchat/tree/main/utils/request/request.go)
 - restful示例：可以参考资源路由模块中的示例API。
     - 后台文件参考: [router/system/resouce_router.go](https://github.com/liao123-git/ginchat/tree/main/router/system/resouce_router.go)
